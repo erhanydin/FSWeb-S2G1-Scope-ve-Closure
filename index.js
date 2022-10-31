@@ -18,7 +18,7 @@
 function ilkiniDon(stringArray, callback) {
   return callback(stringArray[0])
 }
-console.log('örnek görev:', ilkiniDon(['as','sa'],function(metin){return metin+metin}));
+console.log('örnek görev:', ilkiniDon(['as', 'sa'], function (metin) { return metin + metin }));
 
 // Başlangıç Challenge'ı Sonu
 
@@ -40,7 +40,7 @@ console.log('örnek görev:', ilkiniDon(['as','sa'],function(metin){return metin
 function skorArtirici() {
   let skor = 0;
   return function skorGuncelle() {
-   return skor++;
+    return skor++;
   }
 }
 
@@ -64,10 +64,12 @@ Aşağıdaki takimSkoru() fonksiyonununda aşağıdakileri yapınız:
 Not: Bu fonskiyon, aşağıdaki diğer görevler için de bir callback fonksiyonu olarak da kullanılacak
 */
 
-function takimSkoru(/*Kodunuzu buraya yazınız*/){
-    /*Kodunuzu buraya yazınız*/
+function takimSkoru() {
+  let score = Math.floor(Math.random() * 16 + 10);
+  return score;
 }
 
+console.log(takimSkoru());
 
 
 
@@ -84,11 +86,42 @@ Aşağıdaki macSonucu() fonksiyonununda aşağıdakileri yapınız:
   "EvSahibi": 92,
   "KonukTakim": 80
 }
-*/ 
+*/
 
-function macSonucu(/*Kodunuzu buraya yazınız*/){
-  /*Kodunuzu buraya yazınız*/
+
+// const scoreTable = { // Yöntem 1
+//   "EvSahibi": 0,
+//   "KonukTakim": 0,
+// }
+
+function macSonucu(callback, quarterCount) {
+
+  let evSahibi = 0;
+  let konukTakim = 0;
+  let gameFinal = new Object();
+
+  for (let i = 1; i <= quarterCount; i++) {
+    evSahibi += callback();
+    konukTakim += callback();     
+  }
+
+  gameFinal = {
+    "EvSahibi": evSahibi,
+    "KonukTakim": konukTakim,
+  }
+
+  // const gameFinal = new Object();
+  // gameFinal.EvSahibi = evSahibi;
+  // gameFinal.konukTakim = konukTakim;
+
+
+  return gameFinal;
 }
+
+
+console.log(macSonucu(takimSkoru, 4));
+
+
 
 
 
@@ -109,11 +142,26 @@ Aşağıdaki periyotSkoru() fonksiyonununda aşağıdakileri yapınız:
   */
 
 
-function periyotSkoru(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
+function periyotSkoru(callback) {
+  // scoreTable.EvSahibi = callback(); // Yöntem 1
+  // scoreTable.KonukTakim = callback();
+  // return scoreTable;
+  let qrtScore = new Object();
+  let evSahibi = 0;
+  let konukTakim = 0;
 
+  evSahibi += callback();
+  konukTakim += callback();
+
+  qrtScore = {
+    "EvSahibi": evSahibi,
+    "KonukTakim": konukTakim,
+  }
+
+  return qrtScore;
 }
 
+console.log(periyotSkoru(takimSkoru));
 
 /* Zorlayıcı Görev 5: skorTabelasi() 
 Aşağıdaki skorTabelasi() fonksiyonunu kullanarak aşağıdakileri yapınız:
@@ -146,15 +194,51 @@ MAÇ UZAR ise skorTabelasi(periyotSkoru,takimSkoru,4)
 ] */
 // NOTE: Bununla ilgili bir test yoktur. Eğer logladığınız sonuçlar yukarıdakine benziyor ise tmamlandı sayabilirsiniz.
 
-function skorTabelasi(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
+
+
+
+function skorTabelasi(callback, callback_2, quarterCount_2) {
+  let evSahibi_toplam = 0;
+  let konukTakim_toplam = 0;
+  let gameFinal = new Array();  
+  
+  for(let i = 0; i <quarterCount_2; i++){
+    let evSahibi = 0;
+    let konukTakim = 0;
+    evSahibi += callback_2();
+    konukTakim += callback_2();
+    gameFinal.push(`${i + 1}. Periyot: Ev Sahibi ${evSahibi} - Konuk Takım ${konukTakim}`)
+    evSahibi_toplam = evSahibi_toplam + evSahibi;
+    konukTakim_toplam = konukTakim_toplam + konukTakim;
+  }
+  
+
+  if(evSahibi_toplam == konukTakim_toplam){
+    evSahibi += callback_2();
+    konukTakim += callback_2();
+    gameFinal.push(`1. Uzatma: Ev Sahibi ${evSahibi} - Konuk Takım ${konukTakim}`)
+    evSahibi_toplam = evSahibi_toplam + evSahibi;
+    konukTakim_toplam = konukTakim_toplam + konukTakim;
+    if(evSahibi_toplam > konukTakim_toplam || evSahibi_toplam < konukTakim_toplam){
+      gameFinal.push(`Maç Sonucu: Ev Sahibi ${evSahibi_toplam} - Konuk Takım ${konukTakim_toplam}`)
+    }
+  } else{
+    gameFinal.push(`Maç Sonucu: Ev Sahibi ${evSahibi_toplam} - Konuk Takım ${konukTakim_toplam}`)    
+  }
+
+  console.log(evSahibi_toplam);
+  console.log(konukTakim_toplam);
+
+  return gameFinal;
 }
 
+console.log(skorTabelasi(periyotSkoru, takimSkoru, 4));
 
 
 
 /* Aşağıdaki satırları lütfen değiştirmeyiniz*/
-function sa(){
+
+function sa() {
   console.log('Kodlar çalışıyor');
   return 'as';
 }
@@ -169,3 +253,4 @@ module.exports = {
   periyotSkoru,
   skorTabelasi,
 }
+
